@@ -1,0 +1,15 @@
+name: "Safe Service Monitor"
+description: "GitHub Action to monitor the Safe service"
+author: "rmeissner"
+branding:
+  icon: "award"
+  color: blue
+inputs:
+  safe-address:
+    description: "Address of the Safe to monitor (e.g. 0x0Da0...5afe)"
+  service-url:
+    description: "Address of the Safe service"
+    default: "https://safe-transaction.mainnet.gnosis.io/"
+runs:
+  using: "node16"
+  main: "lib/index.js"
