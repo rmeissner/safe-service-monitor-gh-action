@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
 import axios, { AxiosResponse } from 'axios'
 import { branchExists, createBranchFromDefault, getDefaultBranch } from './branches'
-import { createFile, fileExists } from './files'
+import { createFile, fileExists, toFileContent } from './files'
 import { MultisigDetails, MultisigTransaction, MultiSigTrigger, Page, SafeInfo } from "./types"
 import { triggerToBranch, triggerToDetailsPath } from './utils'
 
@@ -36,7 +36,7 @@ async function run(): Promise<void> {
         ...transaction
       }
       await createBranchFromDefault(branch)
-      await createFile(branch, path, JSON.stringify(details, null, 3))
+      await createFile(branch, path, toFileContent(details))
     }
 
   } catch (error) {

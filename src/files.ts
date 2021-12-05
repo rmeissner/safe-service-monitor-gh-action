@@ -1,6 +1,8 @@
 import { context } from "@actions/github/lib/utils"
 import { toolkit } from "./config"
 
+export const toFileContent = (content: any) => Buffer.from(JSON.stringify(content, null, 3)).toString('base64')
+
 export const fileExists = async (branch: string, path: string): Promise<boolean> => {
     try {
         await toolkit.repos.getContent({
