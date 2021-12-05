@@ -1,6 +1,6 @@
 import * as core from '@actions/core'
 import axios, { AxiosResponse } from 'axios'
-import { branchExists, getDefaultBranch } from './branches'
+import { branchExists, createBranchFromDefault, getDefaultBranch } from './branches'
 import { createFile, fileExists } from './files'
 import { MultisigDetails, MultisigTransaction, MultiSigTrigger, Page, SafeInfo } from "./types"
 import { triggerToBranch, triggerToDetailsPath } from './utils'
@@ -35,6 +35,7 @@ async function run(): Promise<void> {
         safe: safeAddress,
         ...transaction
       }
+      await createBranchFromDefault(branch)
       await createFile(branch, path, JSON.stringify(details, null, 3))
     }
 
