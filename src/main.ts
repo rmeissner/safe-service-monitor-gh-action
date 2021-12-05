@@ -15,15 +15,22 @@ async function run(): Promise<void> {
 
     const txResponse: AxiosResponse<Page<MultisigTransaction>> = await axios.get(`${serviceUrl}/api/v1/safes/${safeAddress}/multisig-transactions/?nonce__gte=${safeInfo.nonce}`)
     for (const transaction of txResponse.data.results) {
+      console.log("Check transaction", transaction)
       const trigger: MultiSigTrigger = {
         type: 'multisig',
         id: transaction.safeTxHash
       }
       const defaultBranch = await getDefaultBranch()
       const path = triggerToDetailsPath(trigger)
-      if (await fileExists(defaultBranch, path)) continue
+      if (await fileExists(defaultBranch, path)) {
+        console.log("Transaction details already merged")
+        continue
+      }
       const branch = triggerToBranch(trigger)
-      if (await branchExists(branch)) continue
+      if (await branchExists(branch)) {
+        console.log("Transaction details already proposed")
+        continue
+      }
       const details: MultisigDetails = {
         safe: safeAddress,
         ...transaction
