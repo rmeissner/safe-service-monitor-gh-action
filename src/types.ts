@@ -12,8 +12,29 @@ export interface MultisigTransaction {
     nonce: number
 }
 
+export interface MultisigDetails extends MultisigTransaction {
+    safe: string
+}
+
+export interface Page<T> {
+    next: string,
+    results: T[]
+}
+
 export interface SafeInfo {
     address: string,
     owners: string[],
     nonce: number
 }
+
+export interface MultiSigTrigger {
+    type: "multisig",
+    id: string
+}
+
+export interface SafeSnapTrigger {
+    type: "safesnap",
+    id: string
+}
+
+export type Trigger = MultiSigTrigger | SafeSnapTrigger
