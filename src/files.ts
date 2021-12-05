@@ -9,7 +9,7 @@ export const fileExists = async (branch: string, path: string): Promise<boolean>
             ref: branch
         })
         return true
-    } catch (error: any) {
+    } catch (error) {
         if (error.name === 'HttpError' && error.status === 404) {
             return false
         } else {
