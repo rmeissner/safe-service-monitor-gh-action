@@ -21,7 +21,6 @@ export const branchExists = async (branch: string): Promise<boolean> => {
         })
         return true
     } catch (error) {
-        console.log("branchExist", error)
         if (error.name === 'HttpError' && error.status === 404) {
             return false
         } else {
