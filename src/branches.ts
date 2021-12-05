@@ -21,6 +21,7 @@ export const branchExists = async (branch: string): Promise<boolean> => {
         })
         return true
     } catch (error) {
+        console.log("branchExist", error)
         if (error.name === 'HttpError' && error.status === 404) {
             return false
         } else {
@@ -30,16 +31,15 @@ export const branchExists = async (branch: string): Promise<boolean> => {
 }
 
 export const createBranchFromDefault = async (branch: string) => {
-    if (!branchExists(branch)) {
-        const defaultBranchName = await getDefaultBranch()
-        const defaultBranch = await toolkit.repos.getBranch({
-            ...context.repo,
-            branch: defaultBranchName
-        })
-        await toolkit.git.createRef({
-            ref: `refs/heads/${branch}`,
-            sha: defaultBranch.data.commit.sha,
-            ...context.repo
-        })
-    }
+    console.log("Create branch", branch)
+    const defaultBranchName = await getDefaultBranch()
+    const defaultBranch = await toolkit.repos.getBranch({
+        ...context.repo,
+        branch: defaultBranchName
+    })
+    await toolkit.git.createRef({
+        ref: `refs/heads/${branch}`,
+        sha: defaultBranch.data.commit.sha,
+        ...context.repo
+    })
 }
