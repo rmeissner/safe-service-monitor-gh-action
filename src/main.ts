@@ -42,6 +42,7 @@ async function run(): Promise<void> {
       await createFile(branch, path, toFileContent(details))
 
       if (workflowTrigger) {
+        console.log(`Trigger ${workflowTrigger} for ${branch}`)
         await toolkit.actions.createWorkflowDispatch({
           ...context.repo,
           ref: branch,
