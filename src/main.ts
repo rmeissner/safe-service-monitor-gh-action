@@ -1,6 +1,8 @@
 import * as core from '@actions/core'
+import { context } from '@actions/github/lib/utils'
 import axios, { AxiosResponse } from 'axios'
 import { branchExists, createBranchFromDefault, getDefaultBranch } from './branches'
+import { toolkit } from './config'
 import { createFile, fileExists, toFileContent } from './files'
 import { MultisigDetails, MultisigTransaction, MultiSigTrigger, Page, SafeInfo } from "./types"
 import { triggerToBranch, triggerToDetailsPath } from './utils'
@@ -9,6 +11,7 @@ async function run(): Promise<void> {
   try {
     const safeAddress: string = core.getInput('safe-address')
     const serviceUrl: string = core.getInput('service-url')
+    const workflowTrigger: string = core.getInput('workflow-trigger')
     const infoResponse: AxiosResponse<SafeInfo> = await axios.get(`${serviceUrl}/api/v1/safes/${safeAddress}`)
     const safeInfo = infoResponse.data
     console.log("Safe Information", safeInfo)
@@ -37,6 +40,14 @@ async function run(): Promise<void> {
       }
       await createBranchFromDefault(branch)
       await createFile(branch, path, toFileContent(details))
+
+      if (workflowTrigger) {
+        await toolkit.actions.createWorkflowDispatch({
+          ...context.repo,
+          ref: branch,
+          workflow_id: workflowTrigger
+        })
+      }
     }
 
   } catch (error) {
