@@ -1,9 +1,7 @@
 import * as core from '@actions/core'
-import { context } from '@actions/github/lib/utils'
 import axios, { AxiosResponse } from 'axios'
-import { branchExists, createBranchFromDefault, getDefaultBranch } from './branches'
-import { toolkit } from './config'
-import { createFile, fileExists, toFileContent } from './files'
+import { branchExists, createBranchPrWithCommit, getDefaultBranch } from './branches'
+import { createFileCommitOnDefault, fileExists, toFileContent } from './files'
 import { MultisigDetails, MultisigTransaction, MultiSigTrigger, Page, SafeInfo } from "./types"
 import { triggerToBranch, triggerToDetailsPath } from './utils'
 
@@ -38,8 +36,9 @@ async function run(): Promise<void> {
         safe: safeAddress,
         ...transaction
       }
-      //await createBranchFromDefault(branch)
-      await createFile(branch, path, toFileContent(details))
+      const commit = await createFileCommitOnDefault(path, toFileContent(details))
+      const pr = await createBranchPrWithCommit(branch, commit)
+      console.log("Opened PR " + pr)
     }
 
   } catch (error) {

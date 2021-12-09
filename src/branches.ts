@@ -29,16 +29,22 @@ export const branchExists = async (branch: string): Promise<boolean> => {
     }
 }
 
-export const createBranchFromDefault = async (branch: string) => {
+export const createBranchPrWithCommit = async (branch: string, commit: string) => {
+
     console.log("Create branch", branch)
-    const defaultBranchName = await getDefaultBranch()
-    const defaultBranch = await toolkit.repos.getBranch({
-        ...context.repo,
-        branch: defaultBranchName
-    })
-    await toolkit.git.createRef({
+    await toolkit.gitdata.createReference({
         ref: `refs/heads/${branch}`,
-        sha: defaultBranch.data.commit.sha,
-        ...context.repo
+        sha: commit
     })
+
+    console.log("Create PR", branch)
+    const defaultBranch = await getDefaultBranch()
+    const pr = await toolkit.pullRequests.create({
+        ...context.repo,
+        title: `Check ${branch}`,
+        head: branch,
+        base: defaultBranch
+    })
+
+    return pr.data.id
 }

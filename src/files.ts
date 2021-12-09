@@ -21,13 +21,44 @@ export const fileExists = async (branch: string, path: string): Promise<boolean>
     }
 }
 
-export const createFile = async (branch: string, path: string, content: string) => {
-    console.log(`refs/heads/${branch}`)
-    await toolkit.repos.createOrUpdateFileContents({
+export const createFileCommitOnDefault = async (path: string, content: string): Promise<string> => {
+    const defaultBranch = getDefaultBranch()
+    // Get the current "master" reference, to get the current master's sha
+    const sha = await toolkit.gitdata.getReference({
         ...context.repo,
-        path,
-        message: 'Add details',
-        content,
-        branch: `refs/heads/${branch}`
+        ref: `heads/${defaultBranch}`
     })
+
+    // Get the tree associated with master, and the content
+    // of the template file to open the PR with.
+    const tree = await toolkit.gitdata.getTree({
+        ...context.repo,
+        tree_sha: sha.data.object.sha
+    })
+
+    // Create a new blob with the existing template content
+    const blob = await toolkit.gitdata.createBlob({
+        content: content,
+        encoding: 'utf8'
+    })
+
+    const newTree = await toolkit.gitdata.createTree({
+        ...context.repo,
+        tree: [{
+            path,
+            sha: blob.data.sha,
+            mode: '100644',
+            type: 'blob'
+        }],
+        base_tree: tree.data.sha
+    })
+
+    // Create a commit and a reference using the new tree
+    const commit = await toolkit.gitdata.createCommit({
+        ...context.repo,
+        message: 'Add details',
+        parents: [sha.data.object.sha],
+        tree: newTree.data.sha
+    })
+    return commit.data.sha
 }
