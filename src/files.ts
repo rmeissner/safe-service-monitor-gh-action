@@ -2,7 +2,7 @@ import { context } from "@actions/github/lib/utils"
 import { toolkit } from "./config"
 import { getDefaultBranch } from "./branches"
 
-export const toFileContent = (content: any) => Buffer.from(JSON.stringify(content, null, 3)).toString('base64')
+export const toFileContent = (content: any) => JSON.stringify(content, null, 3)
 
 export const fileExists = async (branch: string, path: string): Promise<boolean> => {
     try {
@@ -42,7 +42,8 @@ export const createFileCommitOnDefault = async (path: string, content: string): 
     // Create a new blob with the existing template content
     const blob = await toolkit.git.createBlob({
         ...context.repo,
-        content: content
+        content: content,
+        encoding: "utf8"
     })
     console.log({blob})
 
