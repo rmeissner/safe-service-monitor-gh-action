@@ -22,8 +22,7 @@ export const fileExists = async (branch: string, path: string): Promise<boolean>
 }
 
 export const createFileCommitOnDefault = async (path: string, content: string): Promise<string> => {
-
-    const defaultBranch = getDefaultBranch()
+    const defaultBranch = await getDefaultBranch()
     console.log({defaultBranch})
     // Get the current "master" reference, to get the current master's sha
     const ref = await toolkit.git.getRef({
