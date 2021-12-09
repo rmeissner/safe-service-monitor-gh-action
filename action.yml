@@ -10,9 +10,6 @@ inputs:
   service-url:
     description: "Address of the Safe service"
     default: "https://safe-transaction.mainnet.gnosis.io/"
-  workflow-trigger:
-    description: "Workflow to trigger on new transaction"
-    default: ""
 runs:
   using: "node16"
   main: "lib/index.js"

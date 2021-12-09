@@ -38,17 +38,8 @@ async function run(): Promise<void> {
         safe: safeAddress,
         ...transaction
       }
-      await createBranchFromDefault(branch)
+      //await createBranchFromDefault(branch)
       await createFile(branch, path, toFileContent(details))
-
-      if (workflowTrigger) {
-        console.log(`Trigger ${workflowTrigger} for ${branch}`)
-        await toolkit.actions.createWorkflowDispatch({
-          ...context.repo,
-          ref: branch,
-          workflow_id: workflowTrigger
-        })
-      }
     }
 
   } catch (error) {
