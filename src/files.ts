@@ -22,6 +22,7 @@ export const fileExists = async (branch: string, path: string): Promise<boolean>
 }
 
 export const createFile = async (branch: string, path: string, content: string) => {
+    console.log(`refs/heads/${branch}`)
     await toolkit.repos.createOrUpdateFileContents({
         ...context.repo,
         path,
