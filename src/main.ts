@@ -34,7 +34,7 @@ async function run(): Promise<void> {
       }
       const details: MultisigDetails = {
         safe: safeAddress,
-        ...transaction
+        tx: transaction
       }
       const commit = await createFileCommitOnDefault(path, toFileContent(details))
       const pr = await createBranchPrWithCommit(branch, commit)

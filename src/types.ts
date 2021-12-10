@@ -12,8 +12,9 @@ export interface MultisigTransaction {
     nonce: number
 }
 
-export interface MultisigDetails extends MultisigTransaction {
-    safe: string
+export interface MultisigDetails {
+    safe: string,
+    tx: MultisigTransaction
 }
 
 export interface Page<T> {
